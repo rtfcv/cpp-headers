@@ -41,13 +41,15 @@ class RK{
 
             //rename variables to make things easier.
             int s=4;
-            _n=r0.rows();
+            _n=r0.rows(); //decide dimensions now
             int n=_n;
             Eigen::Vector4d c=_c4;
             Eigen::Vector4d b=_b4;
             Eigen::Matrix4d A=_A4;
 
             Eigen::MatrixXd K(n, s);
+            Eigen::MatrixXd outPut(_n, steps+1);
+            outPut.row(0)=r0;
 
             //variables for runge kutta steps
             double t1 = t0;
@@ -56,6 +58,8 @@ class RK{
             Eigen::VectorXd rn2 = r0;
             Eigen::VectorXd dr = 0*r0;
             Eigen::MatrixXd Kt(s, n);
+
+            int stepsDone=0;
 
 //            for(int m=0; m<=steps+1; m++){//runge kutta loop
             while(true){
@@ -70,7 +74,10 @@ class RK{
                 }
                 t2=t1+h;
                 rn2=rn1+h*K*b;
-                if(t2>=t){break;}
+
+                stepsDone+=1
+                outPut.row(stepsDone) = rn2;
+                if(stepsDone>=steps){break;}
             }
 
             return rn2;
